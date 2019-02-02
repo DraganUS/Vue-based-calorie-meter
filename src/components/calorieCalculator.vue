@@ -13,21 +13,29 @@
         <li>PROTEIN</li>
       </ul>
       <hr> 
-        <ul v-for="(value, index) in item">
+        <ul v-for="(value, index) in item" >
         <li>{{ value.descrtiopion }}</li>
         <li>{{ value.calories }}</li>
         <li>{{ value.fat }}</li>
         <li>{{ value.carbs }}</li>
         <li>{{ value.protein }}</li>
+        <i class="fas fa-times" @click="deleteFromList(index)"></i>
       </ul>
       <div id="total">
         <span>Total</span>
-        <span>1231</span>
-        <span>21</span>
-        <span>213</span>
-        <span>21323</span>
+        <span>{{ totalCalories }}</span>
+        <span>{{ totalFat }}</span>
+        <span>{{ totalCarbs }}</span>
+        <span>{{ totalProtein }}</span>
       </div>
-      <i class="fas fa-plus-circle"></i>
+      <ul>
+        <li><input  placeholder="enter description *" type="text"  v-model="newDescription"></li>
+        <li><input  placeholder="enter calories *" type="number"  v-model="newCalories"></li>
+        <li><input  placeholder="enter fat" type="number"  v-model="newFat"></li>
+        <li><input  placeholder="enter carbs" type="number"  v-model="newCarbs"></li>
+        <li><input  placeholder="enter protein" type="number"  v-model="newProtein"></li>    
+      </ul>
+      <i @click="addItem(),calculateTotal()"  class="fas fa-plus-circle"></i>
     </div>
   
 </template>
@@ -38,10 +46,14 @@ export default {
   data(){
     return {
       newDescription: "",
-      newCalories: "",
-      newFat: "",
-      newCarbs: "",
-      newProtein: "",
+      newCalories: 0,
+      newFat: 0,
+      newCarbs: 0,
+      newProtein: 0,
+      totalCalories: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalProtein: 0,
       item: [
         { 
           descrtiopion: "This is an item1",
@@ -52,14 +64,14 @@ export default {
         },
         { 
           descrtiopion: "This is an item2",
-          calories: 225,
+          calories: 222,
           fat: 12,
           carbs: 23,
           protein: 29
         },
         { 
           descrtiopion: "This is an item3",
-          calories: 225,
+          calories: 111,
           fat: 12,
           carbs: 23,
           protein: 29
@@ -68,9 +80,43 @@ export default {
     }
   },
   methods: {
+    addItem(){
 
+      if (this.newDescription !== '' && this.newCalories !== '') {
+         this.item.push({
+        descrtiopion: this.newDescription,
+        calories: parseInt(this.newCalories),
+        fat: parseInt(this.newFat),
+        carbs: parseInt(this.newCarbs),
+        protein: parseInt(this.newProtein)
+      });
+        this.newDescription = "";
+        this.newCalories = 0;
+        this.newFat = 0 ;
+        this.newCarbs = 0;
+        this.newProtein = 0;
+      } else{
+        alert("You need to enter descrtiopion and calories")
+      }
+
+    },
+    calculateTotal(){
+      this.totalCalories=0;
+      this.totalFat = 0 ;
+      this.totalCarbs = 0;
+      this.totalProtein = 0;
+      for (let i = 0; i < this.item.length; i++) {
+      this.totalCalories += this.item[i].calories;
+      this.totalFat += this.item[i].fat;
+      this.totalCarbs += this.item[i].carbs;
+      this.totalProtein += this.item[i].protein;
+      }
+      return this.totalCalories,this.totalFat, this.totalCarbs, this.totalProtein;
+    },
+    deleteFromList(index){
+        this.item.splice(0, 1);    
+       }, 
   }
-
 }
 </script>
 
@@ -94,7 +140,7 @@ div#top{
 }
 div#top i{
   position: absolute;
-  top: -8px;
+  top: -17px;
   left: 2px;
   font-size: 131px;
 }
@@ -141,7 +187,22 @@ div#total span:nth-of-type(1){
 div#total span{
   font-weight: 800;
   width: 100px;
-  margin: 12px;  
+  margin: 12px;
+}
+ul li input{
+  border: none;
+  width: 100%;
+  height: 25px;
+}
+i{
+  cursor: pointer;
+}
+i.fa-times{
+  font-size: 28px;
+  color:#e7e7e7;
+}
+i.fa-times:hover{
+color: #444444;
 }
 i.fa-plus-circle{
   position: absolute;
